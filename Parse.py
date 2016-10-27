@@ -1,3 +1,7 @@
+from telegram.ext import CommandHandler
+from telegram.ext import Updater
+updater = Updater(token='218733833:AAEOa7-kZ_YPeISC6Qq8d5ekUUr_mxPA2hM')
+
 file_name = "var"
 file_name_ans = "ans"
 with open(file_name) as f:
@@ -9,6 +13,8 @@ with open(file_name_ans) as f:
 lists = content
 list_questions = []
 quest = []
+answers = []
+
 
 def parse_quest():
     for one_list in range(len(lists)):
@@ -35,17 +41,11 @@ def parse_quest():
             quest.append(list_questions.copy())
             list_questions.clear()
 
-answers = []
 def parse_answer():
     for one_list in range(len(answer_file)):
         answers.append(answer_file[one_list].split(":")[1].strip("\n").split(";"))
 
-parse_answer()
-#
-parse_quest()
 
-
-user_quest = input('ques ')
 
 
 def search(user_quest_list):
@@ -68,16 +68,28 @@ def start(user_quest):
 def show_answer(id_answer):
     answers_list = answers[id_answer]
     quest_with_id = quest[id_answer][1]
-    print(quest[id_answer][0])
+    quest_main = quest[id_answer][0]
+
+    list_answer = []
+    i = 0
     for answer in answers_list:
+        i = i+1
         if answer == '':
             continue
-        print(quest_with_id[int(answer)-1])
+        answer_quest = quest_with_id[int(answer) - 1]
+        list_answer.append("\nОТВЕТ НОМЕР {}  ОТВЕТ {}".format(i,answer_quest))
+    return ("вопрос - {} \n ответ - {}".format(quest_main,''.join(list_answer)))
 
-try:
-    show_answer(start(user_quest))
-except:
-    pass
+def getMe(user_quest):
+    try:
+        parse_answer()
+        parse_quest()
+        return show_answer(start(user_quest))
+    except:
+        pass
+
+
+
 #
 # for i in list_questions:
 #     if i in user_quest:
